@@ -1,0 +1,21 @@
+name: Destroy Resources
+
+on:
+  schedule:
+    - cron: '0 17 * * 1-5' # Runs at 5 PM UTC, Monday to Friday
+
+jobs:
+  destroy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Login to Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Destroy Resource Group
+      run: |
+        az group delete --name CopilotTest --yes --no-wait

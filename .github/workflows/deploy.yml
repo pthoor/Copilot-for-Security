@@ -1,0 +1,21 @@
+name: Deploy Resources
+
+on:
+  schedule:
+    - cron: '0 8 * * 1-5' # Runs at 8 AM UTC, Monday to Friday
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Login to Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Deploy Bicep template
+      run: |
+        az deployment group create --name CopilotDeployment --resource-group CopilotTest --template-file ./main.bicep --parameters ./main.bicepparam
